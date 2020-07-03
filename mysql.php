@@ -59,8 +59,18 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	function mysql_connect($server, $username, $password, $new_link = false, $client_flags = 0)
 	{
 		global $__MYSQLI_WRAPPER_LINK;
+		$__MYSQLI_WRAPPER_LINK = mysqli_init();
 
-		$__MYSQLI_WRAPPER_LINK = mysqli_connect($server, $username, $password);
+		if(($client_flags & MYSQL_CLIENT_SSL) === MYSQL_CLIENT_SSL)
+		{
+			mysqli_ssl_set($__MYSQLI_WRAPPER_LINK, $_SERVER['HOME'] . '/.config/mysql/client.key', $_SERVER['HOME'] . '/.config/mysql/client.pem', $_SERVER['HOME'] . '/.config/mysql/ca.pem', null, null);
+		}
+
+		if(!mysqli_real_connect($__MYSQLI_WRAPPER_LINK, $server, $username, $password, null, null, null, $client_flags))
+		{
+			$__MYSQLI_WRAPPER_LINK = false;
+		}
+
 		return $__MYSQLI_WRAPPER_LINK;
 	}
 
