@@ -3,19 +3,21 @@
  * Procedural drop in replacement for legacy projects using the MySQL function
  *
  * @author Sjoerd Maessen
- * @version 0.1
+ * @version 0.1+fnx
  */
 
 // Make sure the MySQL extension is not loaded and there is no other drop in replacement active
-if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
-
+if(!extension_loaded('mysql') && !function_exists('mysql_connect'))
+{
 	// Validate if the MySQLi extension is present
-	if (!extension_loaded('mysqli')) {
+	if(!extension_loaded('mysqli'))
+	{
 		trigger_error('The extension "MySQLi" is not available', E_USER_ERROR);
 	}
 
 	// The function name "getLinkIdentifier" will be used to return a valid link_indentifier, make it is available
-	if (function_exists('getLinkIdentifier')) {
+	if(function_exists('getLinkIdentifier'))
+	{
 		trigger_error('The function name "getLinkIdentifier" is already defined, please change the function name', E_USER_ERROR);
 	}
 
@@ -40,7 +42,8 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	 */
 	function getLinkIdentifier(mysqli $mysqli = null)
 	{
-		if (!$mysqli) {
+		if(!$mysqli)
+		{
 			global $__MYSQLI_WRAPPER_LINK;
 			$mysqli = $__MYSQLI_WRAPPER_LINK;
 		}
@@ -131,7 +134,9 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	function mysql_fetch_assoc(mysqli_result $result)
 	{
 		$result = $result->fetch_assoc();
-		if ($result === NULL) {
+
+		if($result === null)
+		{
 			$result = false;
 		}
 
@@ -145,7 +150,9 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	function mysql_fetch_object(mysqli_result $result)
 	{
 		$result = $result->fetch_object();
-		if ($result === NULL) {
+
+		if($result === null)
+		{
 			$result = false;
 		}
 
@@ -159,7 +166,9 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	function mysql_num_rows(mysqli_result $result)
 	{
 		$result = $result->num_rows;
-		if ($result === NULL) {
+
+		if($result === null)
+		{
 			$result = false;
 		}
 
@@ -173,7 +182,9 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	function mysql_fetch_row(mysqli_result $result)
 	{
 		$result = $result->fetch_row();
-		if ($result === NULL) {
+
+		if($result === null)
+		{
 			$result = false;
 		}
 
@@ -212,6 +223,7 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	function mysql_create_db($database_name, mysqli $mysqli = null)
 	{
 		trigger_error('This function was deprecated in PHP 4.3.0 and is therefor not supported', E_USER_DEPRECATED);
+
 		return false;
 	}
 
@@ -232,12 +244,12 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	 * @param int $field
 	 * @return bool
 	 */
-	function mysql_db_name(mysqli_result $result, $row, $field=null)
+	function mysql_db_name(mysqli_result $result, $row, $field = null)
 	{
-	    mysqli_data_seek($result,$row);
-	    $f = mysqli_fetch_row($result);
+		mysqli_data_seek($result,$row);
+		$f = mysqli_fetch_row($result);
 
-	    return $f[0];
+		return $f[0];
 	}
 
 	/**
@@ -348,7 +360,9 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	function mysql_info(mysqli $mysqli = null)
 	{
 		$result = mysqli_info(getLinkIdentifier($mysqli));
-		if ($result === NULL) {
+
+		if($result === null)
+		{
 			$result = false;
 		}
 
@@ -419,10 +433,10 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	 */
 	function mysql_tablename(mysqli_result $result, $row)
 	{
-	    mysqli_data_seek($result, $row);
-	    $f = mysqli_fetch_array($result);
+		mysqli_data_seek($result, $row);
+		$f = mysqli_fetch_array($result);
 
-	    return $f[0];
+		return $f[0];
 	}
 
 	/**
@@ -448,7 +462,9 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	{
 		$result->data_seek($row);
 		$row = $result->fetch_array();
-		if (!isset($row[$field])) {
+
+		if(!isset($row[$field]))
+		{
 			return false;
 		}
 
@@ -491,7 +507,8 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	 */
 	function mysql_fetch_field(mysqli_result $result, $field_offset = 0)
 	{
-		if ($field_offset) {
+		if($field_offset)
+		{
 			mysqli_field_seek($result, $field_offset);
 		}
 
@@ -507,8 +524,9 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	 */
 	function mysql_field_len(mysqli_result $result, $field_offset = 0)
 	{
-	    $fieldInfo = mysqli_fetch_field_direct($result, $field_offset);
-	    return $fieldInfo->length;
+		$fieldInfo = mysqli_fetch_field_direct($result, $field_offset);
+
+		return $fieldInfo->length;
 	}
 
 	/**
@@ -517,6 +535,7 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	function mysql_drop_db()
 	{
 		trigger_error('This function is deprecated since PHP 4.3.0 and therefore not implemented', E_USER_DEPRECATED);
+
 		return false;
 	}
 
@@ -542,7 +561,8 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	function mysql_field_name($result, $field_offset = 0)
 	{
 		$props = mysqli_fetch_field_direct($result, $field_offset);
-		return is_object($props) ? $props->name : false;
+
+		return (is_object($props) ? $props->name : false);
 	}
 
 	/**
@@ -566,11 +586,14 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	{
 		$unknown = 'unknown';
 		$info = mysqli_fetch_field_direct($result, $field_offset);
-		if (empty($info->type)) {
+
+		if(empty($info->type))
+		{
 			return $unknown;
 		}
 
-		switch ($info->type) {
+		switch ($info->type)
+		{
 			case MYSQLI_TYPE_FLOAT:
 			case MYSQLI_TYPE_DOUBLE:
 			case MYSQLI_TYPE_DECIMAL:
@@ -623,10 +646,11 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 			case MYSQLI_TYPE_NULL:
 				return 'null';
 
-			case MYSQLI_TYPE_NEWDATE:
-			case MYSQLI_TYPE_INTERVAL:
-			case MYSQLI_TYPE_SET:
-			case MYSQLI_TYPE_GEOMETRY:
+			#case MYSQLI_TYPE_NEWDATE:
+			#case MYSQLI_TYPE_INTERVAL:
+			#case MYSQLI_TYPE_SET:
+			#case MYSQLI_TYPE_GEOMETRY:
+
 			default:
 				return $unknown;
 		}
@@ -642,7 +666,9 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	function mysql_field_table(mysqli_result $result, $field_offset = 0)
 	{
 		$info = mysqli_fetch_field_direct($result, $field_offset);
-		if (empty($info->table)) {
+
+		if(empty($info->table))
+		{
 			return false;
 		}
 
@@ -660,23 +686,35 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	 */
 	function mysql_field_flags(mysqli_result $result , $field_offset = 0)
 	{
-	    $flags_num = mysqli_fetch_field_direct($result,$field_offset)->flags;
+		$flags_num = mysqli_fetch_field_direct($result,$field_offset)->flags;
 
-	    if (!isset($flags))
-	    {
-	        $flags = array();
-	        $constants = get_defined_constants(true);
-	        foreach ($constants['mysqli'] as $c => $n) if (preg_match('/MYSQLI_(.*)_FLAG$/', $c, $m)) if (!array_key_exists($n, $flags)) $flags[$n] = $m[1];
-	    }
+		if(!isset($flags))
+		{
+			$flags = array();
+			$constants = get_defined_constants(true);
+			foreach ($constants['mysqli'] as $c => $n)
+			{
+				if(preg_match('/MYSQLI_(.*)_FLAG$/', $c, $m) && !array_key_exists($n, $flags))
+				{
+					$flags[$n] = $m[1];
+				}
+			}
+		}
 
-	    $result = array();
-	    foreach ($flags as $n => $t) if ($flags_num & $n) $result[] = $t;
+		$result = array();
+		foreach ($flags as $n => $t)
+		{
+			if($flags_num & $n)
+			{
+				$result[] = $t;
+			}
+		}
 
-	    $return = implode(' ', $result);
-	    $return = str_replace('PRI_KEY','PRIMARY_KEY',$return);
-	    $return = strtolower($return);
+		$return = implode(' ', $result);
+		$return = str_replace('PRI_KEY','PRIMARY_KEY',$return);
+		$return = strtolower($return);
 
-	    return $return;
+		return $return;
 	}
 
 	/**
@@ -708,6 +746,6 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 
 		return false;
 	}
-
 }
+
 ?>
