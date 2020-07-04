@@ -82,12 +82,9 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	 * @param $password
 	 * @return mysqli|null
 	 */
-	function mysql_pconnect($server, $username, $password, $new_link = false, $client_flags = 0)
+	function mysql_pconnect($server, $username, $password, $client_flags = 0)
 	{
-		global $__MYSQLI_WRAPPER_LINK;
-
-		$__MYSQLI_WRAPPER_LINK = mysqli_connect('p:' . $server, $username, $password);
-		return $__MYSQLI_WRAPPER_LINK;
+		return mysql_connect('p:' . $server, $username, $password, false, $client_flags);
 	}
 
 	/**
@@ -697,8 +694,6 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	/**
 	 * Selects a database and executes a query on it
 	 *
-	 * @todo implement
-	 *
 	 * @param $database
 	 * @param $query
 	 * @param mysqli $mysqli
@@ -706,7 +701,11 @@ if (!extension_loaded('mysql') && !function_exists('mysql_connect')) {
 	 */
 	function mysql_db_query($database, $query, mysqli $mysqli = null)
 	{
-		trigger_error('This function is deprecated since PHP 5.3.0 and therefore not implemented', E_USER_DEPRECATED);
+		if(mysql_select_db($database, $mysqli))
+		{
+			return mysql_query($query, $mysqli);
+		}
+
 		return false;
 	}
 
